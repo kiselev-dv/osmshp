@@ -72,6 +72,7 @@ class Env(object):
             self.config = yaml.load(fp, YAMLLoader)
 
         # Default settings
+        
         if not 'database' in self.config:
             self.config['database'] = dict()
 
@@ -84,9 +85,9 @@ class Env(object):
             self.config['export'] = dict()
 
         export = self.config['export']
-        export['pgsql2shp'] = 'pgsql2shp'
-        export['shptree'] = 'shptree'
-        export['7z'] = '7z'
+        export['pgsql2shp'] = export.get('pgsql2shp', 'pgsql2shp')
+        export['shptree'] = export.get('shptree', 'shptree')
+        export['7z'] = export.get('7z', '7z')
 
         if not 'options' in self.config:
             self.config['options'] = dict()
