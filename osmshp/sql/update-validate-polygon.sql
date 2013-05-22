@@ -1,0 +1,1 @@
+UPDATE osm_polygon SET is_valid = ST_IsValid(way) WHERE is_valid IS NULL;

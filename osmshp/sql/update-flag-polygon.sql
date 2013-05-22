@@ -1,0 +1,1 @@
+UPDATE osm_polygon SET flag = true WHERE NOT flag;

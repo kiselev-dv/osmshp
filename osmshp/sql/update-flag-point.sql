@@ -1,0 +1,1 @@
+UPDATE osm_point SET flag = true WHERE NOT flag;

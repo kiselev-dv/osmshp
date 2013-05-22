@@ -1,0 +1,8 @@
+ALTER TABLE osm_point
+  ADD COLUMN flag boolean NOT NULL DEFAULT true,
+  ADD COLUMN ver int NOT NULL DEFAULT 1,
+  ADD COLUMN is_valid boolean DEFAULT true;
+
+ALTER TABLE osm_point
+  ALTER COLUMN ver SET DEFAULT 0,
+  ALTER COLUMN flag SET DEFAULT false;

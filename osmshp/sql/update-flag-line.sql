@@ -1,0 +1,1 @@
+UPDATE osm_line SET flag = true WHERE NOT flag;
