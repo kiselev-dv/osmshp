@@ -470,11 +470,12 @@ class Env(object):
                     fd.write('65001')
                 
             if 'readme' in self.config['export']:
+                readme = os.path.split(self.config['export']['readme'])[1]
                 shutil.copy(
                     self.config['export']['readme'],
-                    os.path.join(tmpdir, 'readme.txt')
+                    os.path.join(tmpdir, readme)
                 )
-                files.append('readme.txt')
+                files.append(readme)
 
             # qgis projects
             if 'qgis_projects' in self.config['export']:
