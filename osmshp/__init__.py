@@ -80,12 +80,43 @@ class Env(object):
         database['user'] = database.get('user', 'osmshp')
         database['name'] = database.get('name', 'osmshp')
 
+        if not 'export' in self.config:
+            self.config['export'] = dict()
+
+        export = self.config['export']
+        export['pgsql2shp'] = 'pgsql2shp'
+        export['shptree'] = 'shptree'
+        export['7z'] = '7z'
+
         if not 'options' in self.config:
             self.config['options'] = dict()
 
         options = self.config['options']
         options['worker_count'] = int(options.get('worker_count', 4))
         options['chunk_size'] = int(options.get('chunk_size', 10000))
+
+        if not 'logging' in self.config:
+            self.config['logging'] = dict(
+                version=1,
+                formatters={
+                    'simple': {
+                        'format': '%(asctime)s - %(levelname)s - %(threadName)s: %(message)s',
+                        'datefmt': '%Y/%m/%d %H:%M:%S'
+                    }
+                },
+                handlers={
+                    'console': {
+                        'class': 'logging.StreamHandler',
+                        'formatter': 'simple',
+                        'level': 'DEBUG',
+                        'stream': 'ext://sys.stderr'
+                    }
+                },
+                root={
+                    'level': 'INFO',
+                    'handlers': ['console', ]
+                }
+            )
 
         if configure_logging:
             logging.config.dictConfig(self.config['logging'])
