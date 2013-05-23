@@ -22,6 +22,7 @@ setup(
         'requests',
         'sqlalchemy',
         'geoalchemy',
+        'flask',
     ],
     entry_points={
         'console_scripts': [ 'osmshp = osmshp.script:main', ],

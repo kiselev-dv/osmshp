@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table class="table">
+
+    <thead><tr>
+
+        <th>Имя</th>
+        <th>Тип</th>
+        <th>Описание</th>
+
+    </tr></thead>
+
+    <tbody>
+    
+    {% for lid, layer in layers.iteritems() %}
+
+    <tr>
+        <td>{{ lid }}</td>
+        <td>{{ layer.type }}</td>
+        <td>{{ layer.name }}</td>
+    </tr>
+
+    {% endfor %}
+    
+    </tbody>
+
+</table>
+
+{% endblock %}
