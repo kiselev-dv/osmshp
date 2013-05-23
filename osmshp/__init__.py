@@ -65,14 +65,17 @@ YAMLLoader.add_constructor('!path', YAMLLoader.path)
 
 class Env(object):
 
-    def __init__(self, config, configure_logging=True):
+    def __init__(self, config=None, configure_logging=True):
         self._logger = None
+
+        if config is None:
+            config = os.environ.get('OSMSHP_CONFIG', 'config.yaml')
 
         with open(config, 'r') as fp:
             self.config = yaml.load(fp, YAMLLoader)
 
         # Default settings
-        
+
         if not 'database' in self.config:
             self.config['database'] = dict()
 
