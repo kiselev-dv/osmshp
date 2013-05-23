@@ -26,4 +26,4 @@ def layers():
 if __name__ == '__main__':
     from osmshp import Env
     app.env = Env()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
