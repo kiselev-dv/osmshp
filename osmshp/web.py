@@ -22,6 +22,7 @@ def region(code):
         """SELECT
             ST_AsGeoJSON(ST_Difference(geom_out, geom_in )) AS ring,
             ST_AsGeoJSON(geom) AS geom,
+            ST_AsGeoJSON(eval(expression)) AS current,
             ST_XMin(geom_out) AS min_x,
             ST_XMax(geom_out) AS max_x,
             ST_YMin(geom_out) AS min_y,

@@ -80,6 +80,12 @@
         };
         L.geoJson(geomData, {style: { weight: 1, fillOpacity: 0.25, color: "red" }}).addTo(map);        
 
+        var currentData = {
+            "type":"FeatureCollection",
+            "features":[ {"type": "Feature", "geometry": {{ qgeom['current'] | safe }} }]
+        };
+        L.geoJson(currentData, {style: { weight: 1, fillOpacity: 0.25, color: "green" }}).addTo(map);        
+
         var ringData = {
             "type":"FeatureCollection",
             "features":[ {"type": "Feature", "geometry": {{ qgeom['ring'] | safe }} }]
