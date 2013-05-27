@@ -262,7 +262,7 @@ class Env(object):
             if m.group(1) in self.tag_columns:
                 return '"%s"' % m.group(1)
             else:
-                return "tags->'%s'" % m.group(1)
+                return "(tags->'%s')" % m.group(1)
         return re.sub('\<([\w\:\_]+)\>', repl, sql)
 
     def get_connection(self):
