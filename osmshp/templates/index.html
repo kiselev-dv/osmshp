@@ -4,8 +4,8 @@
 
 <table class="table table-striped">
     <thead><tr>
-        <th>Код</th>
         <th>Регион</th>
+        <th>Код</th>
         <th>Полигон обрезки</th>
 
         {% if export_url %}
@@ -18,18 +18,19 @@
 
     {% for region in regions %}
     <tr>
-        <td>{{ region.code }}</td>
-        <td>{{ region.name }}</td>
         <td>
-            {% if version.ts == region.geom_tstamp %}
-                <span class="label label-success">Актуален</span></td>
-            {% else %}
-                <span class="label label-warning">Неактуален</span></td>
-            {% endif %}
+            <a href="{{ url_for('region', code=region.code) }}">
+                {{ region.name }}
+            </a>
+        </td>
+        
+        <td>{{ region.code }}</td>
+
+        <td>{% include "region-status-label.html" %}</td>
 
         {% if export_url %}
-        <td><a href="{{export_link}}/latest/{{region.code}}.7z">Загрузить</a></td>
-        <td><a href="{{export_link}}/{{region.code}}/">Архив</a></td>
+        <td><a href="{{export_url}}/latest/{{region.code}}.7z">Скачать</a></td>
+        <td><a href="{{export_url}}/{{region.code}}/">Архив</a></td>
         {% endif %}
 
     </tr>

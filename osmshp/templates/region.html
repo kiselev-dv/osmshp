@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ region.name }} ({{ region.code }})</h2>
+
+<table class="table">
+
+    <tr>
+        <th>Полигон обрезки</th>
+        <td>{% include "region-status-label.html" %}</td>
+        <td colspan="2"><tt>{{ region.expression }}</tt></td>
+    </tr>
+
+    <tr>
+        <th>Версия полигона обрезки</th>
+        <td>{{ region.geom_tstamp }}</td>
+        <th>Версия эталонного полигона</th>
+        <td>{{ region.reference_tstamp }}</td>
+    </tr>
+
+    <tr>
+        <th>Буфер, град.</th>
+        <td>{{ region.simpl_buf }}</td>
+        <th>Упрощение, град.</th>
+        <td>{{ region.simpl_dp }}</td>
+    </tr>
+
+    <tr>
+        <th>Скачать</th>
+        <td colspan="3">
+            <a href="{{export_url}}/latest/{{region.code}}.7z">{{export_url}}/latest/{{region.code}}.7z</a>
+        </td>
+    </tr>
+
+    <tr>
+        <th>Архив</th>
+        <td colspan="3">
+            <a href="{{export_url}}/{{region.code}}/">{{export_url}}/{{region.code}}/</a>
+        </td>
+    </tr>
+
+</table>
+
+{% endblock %}

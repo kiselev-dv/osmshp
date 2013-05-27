@@ -15,7 +15,18 @@ def index():
     )
 
 
-@app.route('/layers/')
+@app.route('/region/<code>')
+def region(code):
+    region = Region.filter_by(code=code).one()
+    return render_template(
+        'region.html',
+        region=region,
+        version=DumpVersion.query().one(),
+        export_url=app.env.config['web'].get('export_url', None),
+    )
+
+
+@app.route('/layer/')
 def layers():
     return render_template(
         'layers.html',
