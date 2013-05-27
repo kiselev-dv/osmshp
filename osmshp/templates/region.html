@@ -1,45 +1,91 @@
 {% extends "base.html" %}
 
+{% block head %}
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+
+{% endblock %}
+
+
 {% block content %}
 
-<h2>{{ region.name }} ({{ region.code }})</h2>
+    <h2>{{ region.name }} ({{ region.code }})</h2>
 
-<table class="table">
+    <table class="table">
 
-    <tr>
-        <th>Полигон обрезки</th>
-        <td>{% include "region-status-label.html" %}</td>
-        <td colspan="2"><tt>{{ region.expression }}</tt></td>
-    </tr>
+        <tr>
+            <th>Полигон обрезки</th>
+            <td>{% include "region-status-label.html" %}</td>
+            <td colspan="2"><tt>{{ region.expression }}</tt></td>
+        </tr>
 
-    <tr>
-        <th>Версия полигона обрезки</th>
-        <td>{{ region.geom_tstamp }}</td>
-        <th>Версия эталонного полигона</th>
-        <td>{{ region.reference_tstamp }}</td>
-    </tr>
+        <tr>
+            <th>Версия полигона обрезки</th>
+            <td>{{ region.geom_tstamp }}</td>
+            <th>Версия эталонного полигона</th>
+            <td>{{ region.reference_tstamp }}</td>
+        </tr>
 
-    <tr>
-        <th>Буфер, град.</th>
-        <td>{{ region.simpl_buf }}</td>
-        <th>Упрощение, град.</th>
-        <td>{{ region.simpl_dp }}</td>
-    </tr>
+        <tr>
+            <th>Буфер, град.</th>
+            <td>{{ region.simpl_buf }}</td>
+            <th>Упрощение, град.</th>
+            <td>{{ region.simpl_dp }}</td>
+        </tr>
 
-    <tr>
-        <th>Скачать</th>
-        <td colspan="3">
-            <a href="{{export_url}}/latest/{{region.code}}.7z">{{export_url}}/latest/{{region.code}}.7z</a>
-        </td>
-    </tr>
+        <tr>
+            <th>Скачать</th>
+            <td colspan="3">
+                <a href="{{export_url}}/latest/{{region.code}}.7z">{{export_url}}/latest/{{region.code}}.7z</a>
+            </td>
+        </tr>
 
-    <tr>
-        <th>Архив</th>
-        <td colspan="3">
-            <a href="{{export_url}}/{{region.code}}/">{{export_url}}/{{region.code}}/</a>
-        </td>
-    </tr>
+        <tr>
+            <th>Архив</th>
+            <td colspan="3">
+                <a href="{{export_url}}/{{region.code}}/">{{export_url}}/{{region.code}}/</a>
+            </td>
+        </tr>
 
-</table>
+    </table>
+
+    <div id="map" style="max-width: 800px; height: 400px; border: 1px solid #999;"></div>
+
+{% endblock %}
+
+
+{% block tail %}
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+    <script type="text/javascript">
+        var map = L.map('map');
+
+        // create the tile layer with correct attribution
+        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='Map data © OpenStreetMap contributors';
+        var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 12, attribution: osmAttrib});       
+
+        map.addLayer(osm);
+
+        var geomData = {
+            "type":"FeatureCollection",
+            "features":[ {"type": "Feature", "geometry": {{ qgeom['geom'] | safe }} }]
+        };
+        L.geoJson(geomData, {style: { weight: 1, fillOpacity: 0.25, color: "red" }}).addTo(map);        
+
+        var ringData = {
+            "type":"FeatureCollection",
+            "features":[ {"type": "Feature", "geometry": {{ qgeom['ring'] | safe }} }]
+        };
+        L.geoJson(ringData, {style: { weight: 1 }}).addTo(map);
+
+        map.fitBounds([
+            [ {{ qgeom['min_y'] }}, {{ qgeom['min_x'] }}],
+            [ {{ qgeom['max_y'] }}, {{ qgeom['max_x'] }}],
+        ]);
+    </script>
 
 {% endblock %}
