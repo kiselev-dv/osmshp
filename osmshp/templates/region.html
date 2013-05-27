@@ -18,8 +18,12 @@
 
         <tr>
             <th>Полигон обрезки</th>
-            <td>{% include "region-status-label.html" %}</td>
-            <td colspan="2"><tt>{{ region.expression }}</tt></td>
+            <td colspan="3">{% include "region-status-label.html" %}</td>
+        </tr>
+
+        <tr>
+            <th>Выражение</th>
+            <td colspan="3"><tt>{{ region.expression }}</tt></td>
         </tr>
 
         <tr>
