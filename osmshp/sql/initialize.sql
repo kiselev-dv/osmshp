@@ -13,6 +13,7 @@ CREATE TABLE buffer_insert (
   osm_id bigint
 ); 
 
+
 CREATE SCHEMA layer;
 GRANT USAGE ON SCHEMA layer TO public;
 
@@ -28,6 +29,7 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+
 CREATE OR REPLACE FUNCTION eval(expression text) RETURNS geometry AS $$
 DECLARE
   result geometry;
@@ -41,3 +43,16 @@ BEGIN
   END;
 END
 $$ LANGUAGE plpgsql IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION region_clean_itersections() RETURNS TRIGGER AS $$
+BEGIN
+  IF NOT ST_Equals(NEW.geom_in, OLD.geom_in) OR NOT ST_Equals(NEW.geom_out, OLD.geom_out) THEN
+    DELETE FROM intersection_point WHERE region_id = NEW.id;
+    DELETE FROM intersection_line WHERE region_id = NEW.id;
+    DELETE FROM intersection_polygon WHERE region_id = NEW.id;
+  END IF;
+
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;

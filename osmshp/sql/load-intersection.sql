@@ -37,3 +37,7 @@ CREATE TABLE intersection_polygon (
   f_area float,
   CONSTRAINT intersection_polygon_pk PRIMARY KEY (tab, osm_id, ver, region_id)
 );
+
+CREATE TRIGGER region_clean_itersections
+  AFTER UPDATE ON region FOR EACH ROW
+  EXECUTE PROCEDURE region_clean_itersections();

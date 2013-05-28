@@ -71,14 +71,23 @@ class Region(Base):
         super(Region, self).__init__(**kwargs)
         self.update_geom()
 
-    def update_geom(self):
+    def update_geom(self, expression=None, simpl_buf=None, simpl_dp=None):
+        if expression is None:
+            expression = self.expression
+
+        if simpl_buf is None:
+            simpl_buf = self.simpl_buf
+
+        if simpl_dp is None:
+            simpl_dp = self.simpl_dp
+
         conn = DBSession.connection()
         result = conn.execute(
             """ SELECT
                 ST_AsText(ST_Multi(%(expr)s)) AS geom,
                 ST_AsText(ST_Multi(ST_Buffer(ST_SimplifyPreserveTopology(ST_Buffer(%(expr)s, -%(simpl_buf)s), %(simpl_dp)s), 0))) AS geom_in,
                 ST_AsText(ST_Multi(ST_Buffer(ST_SimplifyPreserveTopology(ST_Buffer(%(expr)s, %(simpl_buf)s), %(simpl_dp)s), 0))) AS geom_out
-            """ % dict(expr=self.expression, simpl_buf=self.simpl_buf, simpl_dp=self.simpl_dp)
+            """ % dict(expr=expression, simpl_buf=simpl_buf, simpl_dp=simpl_dp)
         )
 
         for row in result:
@@ -88,6 +97,10 @@ class Region(Base):
 
         self.reference_tstamp = DumpVersion.query().one().ts
         self.geom_tstamp = self.reference_tstamp
+
+        self.expression = expression
+        self.simpl_buf = simpl_buf
+        self.simpl_dp = simpl_dp
 
 
 GeometryDDL(Region.__table__)
