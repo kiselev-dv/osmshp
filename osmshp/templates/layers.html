@@ -6,9 +6,9 @@
 
     <thead><tr>
 
-        <th>Имя</th>
-        <th>Тип</th>
+        <th>Слой</th>
         <th>Описание</th>
+        <th>Тип</th>
 
     </tr></thead>
 
@@ -17,9 +17,9 @@
     {% for lid, layer in layers.iteritems() %}
 
     <tr>
-        <td>{{ lid }}</td>
-        <td>{{ layer.type }}</td>
+        <td><a href="{{ url_for('layer', id=lid) }}">{{ lid }}</a></td>
         <td>{{ layer.name }}</td>
+        <td>{{ layer.type }}</td>
     </tr>
 
     {% endfor %}

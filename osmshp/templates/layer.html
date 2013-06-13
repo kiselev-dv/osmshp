@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ layer.name }} ({{ layer.id }})</h2>
+
+<table class="table">
+
+    <tr>
+        <th style="width: 10em;">Фильтр</th>
+        <td><tt>{{ layer.filter }}</tt></td>
+    </tr>
+
+    <tr>
+        <th style="width: 10em;">Поля</th>
+        <td><table class="table table-condensed" style="margin: 0;">
+            {% for field in layer.fields %}
+                <tr>
+                    <td style="border: none; width: 10em;"><tt>{{ field.name }}</tt></td>
+                    <td style="border: none;"><tt>{{ field.definition}}</tt></td>
+                </tr>
+            {% endfor %}
+        </table></td>
+    </tr>
+
+    {% for cid, classification in layer.classification.iteritems() %}
+    <tr>
+        <th style="width: 10em;">{{ cid }}</th>
+        <td><table class="table table-condensed" style="margin: 0;">
+            {% for class in classification.classes %}
+                <tr>
+                    <td style="border: none; width: 10em;"><tt>{{ class.id }}</tt></td>
+                    <td style="border: none;"><tt>{{ class.filter }}</tt></td>
+                </tr>
+            {% endfor %}
+        </table></td>
+    </tr>
+    {% endfor %}
+
+</table>    
+
+{% endblock %}

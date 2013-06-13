@@ -47,6 +47,14 @@ def layers():
     )
 
 
+@app.route('/layer/<id>')
+def layer(id):
+    return render_template(
+        'layer.html',
+        layer=app.env.layers[id]
+    )
+
+
 if __name__ == '__main__':
     from osmshp import Env
     app.env = Env()
