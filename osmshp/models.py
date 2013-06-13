@@ -67,7 +67,7 @@ class Region(Base):
         nullable=False, default=0)
 
     region_group = orm.relationship(
-        RegionGroup, backref=orm.backref('regions'))
+        RegionGroup, backref=orm.backref('regions', order_by=name))
 
     def __init__(self, **kwargs):
         kwargs['simpl_buf'] = kwargs.get('simpl_buf', 0.2)
