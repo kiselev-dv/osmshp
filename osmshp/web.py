@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-from osmshp.models import DBSession, Region, DumpVersion
+from osmshp.models import DBSession, RegionGroup, Region, DumpVersion
 
 app = Flask('osmshp')
 
@@ -9,7 +9,7 @@ app = Flask('osmshp')
 def index():
     return render_template(
         'index.html',
-        regions=Region.query().order_by(Region.code),
+        region_groups=RegionGroup.query(),
         version=DumpVersion.query().one(),
         export_url=app.env.config['web'].get('export_url', None)
     )

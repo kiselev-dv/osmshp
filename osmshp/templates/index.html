@@ -16,25 +16,36 @@
 
     <tbody>
 
-    {% for region in regions %}
-    <tr>
-        <td>
-            <a href="{{ url_for('region', code=region.code) }}">
-                {{ region.name }}
-            </a>
-        </td>
-        
-        <td>{{ region.code }}</td>
+    {% for region_group in region_groups %}
+        {% for region in region_group.regions %}
+            {% if loop.first %}
+            <tr>
+                <th colspan="5">
+                    {{ region_group.name|default("Группа по-умолчанию", true) }}
+                </th>
+            </tr>
+            {% endif %}
+        <tr>
+            <td>
+                <a href="{{ url_for('region', code=region.code) }}">
+                    {{ region.name }}
+                </a>
+            </td>
+            
+            <td>{{ region.code }}</td>
 
-        <td>{% include "region-status-label.html" %}</td>
+            <td>{% include "region-status-label.html" %}</td>
 
-        {% if export_url %}
-        <td><a href="{{export_url}}/latest/{{region.code}}.7z">Скачать</a></td>
-        <td><a href="{{export_url}}/{{region.code}}/">Архив</a></td>
-        {% endif %}
+            {% if export_url %}
+            <td><a href="{{export_url}}/latest/{{region.code}}.7z">Скачать</a></td>
+            <td><a href="{{export_url}}/{{region.code}}/">Архив</a></td>
+            {% endif %}
 
-    </tr>
+        </tr>
+        {% endfor %}
+
     {% endfor %}
+
 
     </tbody>
 </table>

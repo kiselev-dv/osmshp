@@ -62,7 +62,12 @@ class Region(Base):
     geom_out = GeometryColumn(MultiPolygon(2), nullable=False)
     geom_tstamp = sa.Column(sa.DateTime, nullable=False)
     reference_tstamp = sa.Column(sa.DateTime, nullable=False)
-    region_group_id = sa.Column(sa.Integer, sa.ForeignKey('region_group.id'))
+    region_group_id = sa.Column(
+        sa.ForeignKey(RegionGroup.id),
+        nullable=False, default=0)
+
+    region_group = orm.relationship(
+        RegionGroup, backref=orm.backref('regions'))
 
     def __init__(self, **kwargs):
         kwargs['simpl_buf'] = kwargs.get('simpl_buf', 0.2)

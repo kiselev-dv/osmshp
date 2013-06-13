@@ -160,6 +160,9 @@ class Env(object):
         Base.metadata.create_all()
         self.execute_sql(_sql_template('initialize'))
 
+        RegionGroup(id=0).add()
+        self.commit()
+
     def cleanup(self):
         self.logger.info("Cleaning database")
         self.execute_sql(_sql_template('cleanup'))
