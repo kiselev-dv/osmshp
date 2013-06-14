@@ -118,6 +118,9 @@ class LayerVersion(Base):
     ts = sa.Column(sa.DateTime, nullable=False)
     row_count = sa.Column(sa.Integer, nullable=False)
 
+    region = orm.relationship(
+        Region, backref=orm.backref('layer_versions', order_by=layer_id))
+
 
 class LayerStat(Base):
     __tablename__ = 'layer_stat'
