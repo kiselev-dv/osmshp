@@ -5,6 +5,11 @@ from osmshp.models import DBSession, RegionGroup, Region, DumpVersion
 app = Flask('osmshp')
 
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    DBSession.remove()
+
+
 @app.route('/')
 def index():
     return render_template(
