@@ -22,6 +22,7 @@ import psycopg2.extensions
 from .layer import Layer
 from .sql import SqlStatement
 from .models import Base, DBSession, DumpVersion, RegionGroup, Region, LayerVersion
+from .util import YAMLLoader
 
 
 def _sql_template(name, data=None, log=None):
@@ -37,30 +38,6 @@ def _sql_template(name, data=None, log=None):
     sql = template.format(**data)
 
     return SqlStatement(sql=sql, log=log)
-
-
-class YAMLLoader(yaml.Loader):
-
-    def __init__(self, stream):
-        self._root = os.path.split(stream.name)[0]
-        super(YAMLLoader, self).__init__(stream)
-
-    def include(self, node):
-        filename = self.construct_scalar(node)
-        if not filename.startswith('/'):
-            filename = os.path.join(self._root, filename)
-        with open(filename, 'r') as fp:
-            return yaml.load(fp, YAMLLoader)
-
-    def path(self, node):
-        filename = self.construct_scalar(node)
-        if not filename.startswith('/'):
-            filename = os.path.abspath(os.path.join(self._root, filename))
-        return filename
-
-
-YAMLLoader.add_constructor('!include', YAMLLoader.include)
-YAMLLoader.add_constructor('!path', YAMLLoader.path)
 
 
 class Env(object):

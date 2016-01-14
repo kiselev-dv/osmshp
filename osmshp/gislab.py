@@ -21,6 +21,7 @@ def dump(version=None, options=None):
             region + '-' + version.strftime('%y%m%d') + '.' + format
         ))
 
+    print 'Load from: ' + url
     data = requests.get(url, stream=True)
     metadata = requests.get(url + '.meta')
 

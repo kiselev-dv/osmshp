@@ -1,0 +1,8 @@
+#!/usr/bin/python
+from osmshp import Env
+
+env = Env('/opt/projects/nextgis/osmshp-gislab/config.yaml')
+
+env.forward()
+env.update_layers()
+env.export()

@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from osmshp.models import DBSession, RegionGroup, Region, DumpVersion
+import flask
 
 app = Flask('osmshp')
 
@@ -58,7 +59,57 @@ def layer(id):
         'layer.html',
         layer=app.env.layers[id]
     )
-
+    
+@app.route('/new_region')
+def newRegion():
+    """
+    Creates new region with given code and geometry in region table 
+    """
+    
+    code = request.args.get('code')
+    
+    if Region.filter_by(code = code).count() > 0:
+        return flask.jsonify({
+            'result': 'failed',
+            'error': 'already_exists',
+            'errorMsg': 'Region with same code already exists' }), 500
+    
+    wkt  = request.args.get('wkt')
+    gjson  = request.args.get('geo_json')
+    
+    if wkt is None and gjson is not None:
+        conn = DBSession.connection()
+        result = conn.execute("SELECT ST_AsText(ST_Multi(ST_GeomFromGeoJSON('%s'))) as g" % gjson)
+        for row in result:
+            wkt = row['g']
+    
+    name  = request.args.get('name')
+    if name is None:
+        name = code
+        
+    simpl_buf = request.args.get('simpl_buf')
+    simpl_dp  = request.args.get('simpl_dp')    
+    
+    if code != None and wkt != None :
+        expression = "ST_SetSRID(ST_Multi(ST_GeomFromText('%s')), 4326)" % wkt 
+        
+        Region(name = name, code = code, 
+               expression = expression, 
+               simpl_buf = simpl_buf,
+               simpl_dp = simpl_dp).add()
+        DBSession.commit()
+        
+        region = Region.filter_by(code=code).one()
+        
+        return flask.jsonify({
+            'id': region.id, 
+            'result': 'created' })
+    
+    else:    
+        return flask.jsonify({
+            'result': 'failed',
+            'error': 'not_enough_arguments',
+            'errorMsg': 'You need to specify code and wkt or geo_json at least' }), 500    
 
 if __name__ == '__main__':
     from osmshp import Env
