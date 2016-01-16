@@ -48,20 +48,23 @@ class RegionGroup(Base):
     name = sa.Column(sa.Unicode(100))
     sort = sa.Column(sa.Integer)
 
+class User(Base):
+    __tablename__ = 'ngusers'
+    id = sa.Column(sa.Integer, primary_key = True)
+    name = sa.Column(sa.Unicode(100), nullable = False)
+    
 
 class Region(Base):
     __tablename__ = 'region'
-    id = sa.Column(sa.Integer, primary_key=True)
-    code = sa.Column(sa.Unicode(25), nullable=False, unique=True)
+    
+    # Main columns for data extracts
+    id = sa.Column(sa.Integer, primary_key = True)
+    code = sa.Column(sa.Unicode(25), nullable = False, unique = True)
     name = sa.Column(sa.Unicode(100), nullable=False)
     expression = sa.Column(sa.Unicode, nullable=False)
     simpl_buf = sa.Column(sa.Float, nullable=False)
     simpl_dp = sa.Column(sa.Float, nullable=False)
-    geom = GeometryColumn(MultiPolygon(2), nullable=False)
-    geom_in = GeometryColumn(MultiPolygon(2), nullable=False)
-    geom_out = GeometryColumn(MultiPolygon(2), nullable=False)
-    geom_tstamp = sa.Column(sa.DateTime, nullable=False)
-    reference_tstamp = sa.Column(sa.DateTime, nullable=False)
+
     region_group_id = sa.Column(
         sa.ForeignKey(RegionGroup.id),
         nullable=False, default=0)
@@ -69,6 +72,20 @@ class Region(Base):
     region_group = orm.relationship(
         RegionGroup, backref=orm.backref('regions', order_by=name))
 
+    # Billing and scheduling
+    active = sa.Column(sa.Boolean, nullable=False, default=True)
+    user = sa.Column(sa.ForeignKey(User.id), nullable = False, default = 0)
+    # Frequency (in Days)
+    build_frequency = sa.Column(sa.Integer, nullable = False, default = 7)
+    last_success = sa.Column(sa.DateTime, nullable = True)
+    
+    # Generated columns
+    geom = GeometryColumn(MultiPolygon(2), nullable=False)
+    geom_in = GeometryColumn(MultiPolygon(2), nullable=False)
+    geom_out = GeometryColumn(MultiPolygon(2), nullable=False)
+    geom_tstamp = sa.Column(sa.DateTime, nullable=False)
+    reference_tstamp = sa.Column(sa.DateTime, nullable=False)
+    
     def __init__(self, **kwargs):
         kwargs['simpl_buf'] = kwargs.get('simpl_buf', 0.2)
         kwargs['simpl_dp'] = kwargs.get('simpl_dp', 0.9 * kwargs['simpl_buf'])

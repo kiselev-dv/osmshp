@@ -21,7 +21,8 @@ import psycopg2.extensions
 
 from .layer import Layer
 from .sql import SqlStatement
-from .models import Base, DBSession, DumpVersion, RegionGroup, Region, LayerVersion
+from .models import (Base, DBSession, DumpVersion, 
+                     RegionGroup, Region, LayerVersion, User)
 from .util import YAMLLoader
 
 
@@ -138,6 +139,7 @@ class Env(object):
         self.execute_sql(_sql_template('initialize'))
 
         RegionGroup(id=0).add()
+        User(id=0, name='nextgis').add()
         self.commit()
 
     def cleanup(self):
