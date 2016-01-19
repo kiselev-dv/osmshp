@@ -74,7 +74,7 @@ class Region(Base):
 
     # Billing and scheduling
     active = sa.Column(sa.Boolean, nullable=False, default=True)
-    user = sa.Column(sa.ForeignKey(User.id), nullable = False, default = 0)
+    user = sa.Column(sa.ForeignKey(User.id), nullable = False, default = 0, name='_user')
     # Frequency (in Days)
     build_frequency = sa.Column(sa.Integer, nullable = False, default = 7)
     last_success = sa.Column(sa.DateTime, nullable = True)
