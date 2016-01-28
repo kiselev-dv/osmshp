@@ -415,6 +415,9 @@ class Env(object):
         devnull = open(os.devnull, 'w')
 
         for region in Region.query():
+            if not self._scheduled(region):
+                continue
+            
             tmpdir = tempfile.mkdtemp()
 
             datadir = os.path.join(tmpdir, 'data')
@@ -534,6 +537,28 @@ class Env(object):
             shutil.rmtree(tmpdir)
 
             self.logger.info('Region [%s]: export completed', region.code)
+    
+    def _scheduled(self, region):
+        
+        #Skip inactive regions anyway
+        if not region.active:
+            return False
+        
+        #Schedule new one
+        if region.last_success is None:
+            return True
+        
+        #Was builded once, and frequency is make once
+        if region.build_frequency == 0: 
+            return False
+        
+        today = date.today()
+        next = region.last_success + datetime.timedelta(days = region.build_frequency)
+        
+        if today < next:
+            return False 
+        
+        return True
 
     def _execute_query(self, query, connection):
         if isinstance(query, SqlStatement):
