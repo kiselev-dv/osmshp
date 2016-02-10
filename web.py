@@ -93,10 +93,16 @@ def newRegion():
     if code != None and wkt != None :
         expression = "ST_SetSRID(ST_Multi(ST_GeomFromText('%s')), 4326)" % wkt 
         
-        Region(name = name, code = code, 
+        newR = Region(name = name, code = code, 
                expression = expression, 
                simpl_buf = simpl_buf,
-               simpl_dp = simpl_dp).add()
+               simpl_dp = simpl_dp)
+        
+        bf = request.args.get('build_frequency')
+        if bf is not None:
+            newR.build_frequency = int(bf)
+        
+        newR.add()       
         DBSession.commit()
         
         region = Region.filter_by(code=code).one()
@@ -110,6 +116,39 @@ def newRegion():
             'result': 'failed',
             'error': 'not_enough_arguments',
             'errorMsg': 'You need to specify code and wkt or geo_json at least' }), 500    
+    
+@app.route('/remove/<code>')            
+def archive(code):
+    region = Region.filter_by(code=code).one()
+    if region is None:
+        return flask.jsonify({
+            'result': 'failed',
+            'error': 'not_found',
+            'errorMsg': 'Region ' + code + ' not found'}), 500
+        
+    region.active = False
+    region.update()
+    DBSession.commit()           
+
+    return flask.jsonify({'result': 'success'})
+
+#@app.route('/regions/byuser/<login>')            
+#def regions_by_user(login):
+#    conn = DBSession.connection()
+#    
+#    regions = Region.join(Region.user).filter_by(User.login=usr).list()
+#    if region is None:
+#        return flask.jsonify({
+#            'result': 'failed',
+#            'error': 'not_found',
+#            'errorMsg': 'Region ' + code + ' not found'}), 500
+#        
+#    region.active = False
+#    region.update()
+#    DBSession.commit()           
+#
+#    return flask.jsonify({'result': 'success'})
+    
 
 if __name__ == '__main__':
     from osmshp import Env

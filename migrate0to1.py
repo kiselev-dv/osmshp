@@ -24,15 +24,18 @@ def columnExists(table, column):
 cur = conn.cursor()
 cur.execute("""\
 CREATE TABLE IF NOT EXISTS ngusers (
-    id serial PRIMARY KEY,
-    name character varying(100) NOT NULL
+    id    serial PRIMARY KEY,
+    name  character varying(100) NOT NULL,
+    login character varying(100) NOT NULL,
+    mail  character varying(100) NOT NULL
 )
 """)
 
 nguseres = conn.cursor()
 nguseres.execute("select count(*) from ngusers where id = 0")
 if nguseres.fetchone() == 0:
-    conn.cursor().execute("insert into ngusers (id, name) values (0, 'nextgis')")
+    conn.cursor().execute("insert into ngusers (id, name, login, mail) \
+        values (0, 'nextgis', 'nextgis', 'nextgis@nextgis.com')")
 
 if not columnExists('region', 'active'):
     conn.cursor().execute("ALTER TABLE region ADD COLUMN active boolean")

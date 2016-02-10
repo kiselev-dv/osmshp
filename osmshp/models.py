@@ -52,7 +52,8 @@ class User(Base):
     __tablename__ = 'ngusers'
     id = sa.Column(sa.Integer, primary_key = True)
     name = sa.Column(sa.Unicode(100), nullable = False)
-    
+    login = sa.Column(sa.Unicode(100), nullable = False)
+    mail = sa.Column(sa.Unicode(100), nullable = False)
 
 class Region(Base):
     __tablename__ = 'region'
