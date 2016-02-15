@@ -535,8 +535,18 @@ class Env(object):
             os.symlink(current_name, latest_name)
             
             shutil.rmtree(tmpdir)
+            
+            if feature_count != 0:
+                self._updateTS(region)
 
             self.logger.info('Region [%s]: export completed', region.code)
+    
+    def _updateTS(self, region):
+        region.last_success = Date()
+        region.update()
+        
+        DBSession.commit()
+        
     
     def _scheduled(self, region):
         
