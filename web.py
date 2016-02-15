@@ -132,22 +132,22 @@ def archive(code):
 
     return flask.jsonify({'result': 'success'})
 
-#@app.route('/regions/byuser/<login>')            
-#def regions_by_user(login):
-#    conn = DBSession.connection()
-#    
-#    regions = Region.join(Region.user).filter_by(User.login=usr).list()
-#    if region is None:
-#        return flask.jsonify({
-#            'result': 'failed',
-#            'error': 'not_found',
-#            'errorMsg': 'Region ' + code + ' not found'}), 500
-#        
-#    region.active = False
-#    region.update()
-#    DBSession.commit()           
-#
-#    return flask.jsonify({'result': 'success'})
+@app.route('/regions/byuser/<login>')            
+def regions_by_user(login):
+    conn = DBSession.connection()
+    
+    regions = Region.join(Region.user).filter(User.login==usr).list()
+    if region is None:
+        return flask.jsonify({
+            'result': 'failed',
+            'error': 'not_found',
+            'errorMsg': 'Region ' + code + ' not found'}), 500
+        
+    region.active = False
+    region.update()
+    DBSession.commit()           
+
+    return flask.jsonify({'result': 'success'})
     
 
 if __name__ == '__main__':
