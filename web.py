@@ -143,11 +143,7 @@ def regions_by_user(login):
             'error': 'not_found',
             'errorMsg': 'Region ' + code + ' not found'}), 500
         
-    region.active = False
-    region.update()
-    DBSession.commit()           
-
-    return flask.jsonify({'result': 'success'})
+    return flask.jsonify(regions)
     
 
 if __name__ == '__main__':
