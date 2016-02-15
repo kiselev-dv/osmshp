@@ -116,6 +116,46 @@ def newRegion():
             'result': 'failed',
             'error': 'not_enough_arguments',
             'errorMsg': 'You need to specify code and wkt or geo_json at least' }), 500    
+
+@app.route('/regions/update', methods=["POST"])            
+def updateRegion(login):
+    if request.method == "POST":
+        
+        try:
+            json_dict = json.loads(request.body.raw)
+    
+            id = json_dict.get('id')
+            list = Region.filter(id = id).list()
+            
+            
+            if len(list) != 1:
+                return flask.jsonify({
+                    'result': 'failed',
+                    'error': 'not_found',
+                    'errorMsg': 'Object with id %s not found' % id }), 500
+                    
+            subject = list[0] 
+    
+            for key, value in d.items():
+                setattr(subject, key, value)
+    
+            subject.update()
+            DBSession.commit()    
+    
+            return flask.jsonify({
+                'result': 'success' }), 200
+        
+        except ValueError as err:
+            return flask.jsonify({
+                'result': 'failed',
+                'error': 'json_error',
+                'errorMsg': err }), 500        
+            
+    else:
+        return flask.jsonify({
+            'result': 'failed',
+            'error': 'wrong_method',
+            'errorMsg': 'Only POST method supported' }), 500
     
 @app.route('/remove/<code>')            
 def archive(code):
